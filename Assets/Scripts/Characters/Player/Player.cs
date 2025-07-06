@@ -1,13 +1,15 @@
 ﻿using System;
 using UnityEngine;
 
-[RequireComponent(typeof(BirdJumper))]
+[RequireComponent(typeof(PlayerJumper))]
 [RequireComponent(typeof(PlayerCollisionHandler))]
+[RequireComponent(typeof(InputReader))]
 [RequireComponent(typeof(BirdAnimator))]
 public class Player : MonoBehaviour
 {
-    private BirdJumper _jumper;
+    private PlayerJumper _jumper;
     private PlayerCollisionHandler _collisionHandler;
+    private InputReader _inputReader;
     private BirdAnimator _animator;
 
     public event Action GameOver;
@@ -24,26 +26,29 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        _jumper = GetComponent<BirdJumper>();
+        _jumper = GetComponent<PlayerJumper>();
         _collisionHandler = GetComponent<PlayerCollisionHandler>();
+        _inputReader = GetComponent<InputReader>();
         _animator = GetComponent<BirdAnimator>();
     }
 
     public void Reset()
     {
+        _inputReader.enabled = true;
         _jumper.Reset();
         _animator.PlayFlyAnimation();
+    }
+
+    public void Die()
+    {
+        _inputReader.enabled = false;
+        _animator.StopFlyAnimation();
+        GameOver?.Invoke();
     }
 
     private void OnCollisionDetected(IInteractable interactable)
     {
         if (interactable is Ground)
             Die();
-    }
-
-    private void Die()
-    {
-        _animator.StopFlyAnimation();
-        GameOver?.Invoke();
     }
 }

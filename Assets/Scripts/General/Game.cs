@@ -5,6 +5,9 @@ public class Game : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private StartScreen _startScreen;
     [SerializeField] private EndGameScreen _endGameScreen;
+    [SerializeField] private EnemyGenerator _enemyGenerator;
+    [SerializeField] private WeaponPlayer _weaponPlayer;
+    [SerializeField] private ScoreCounter _scoreCounter;
 
     private void OnEnable()
     {
@@ -48,6 +51,10 @@ public class Game : MonoBehaviour
     private void StartGame()
     {
         Time.timeScale = 1;
+
         _player.Reset();
+        _enemyGenerator.Reset();
+        _weaponPlayer.Reset();
+        _scoreCounter.Reset();
     }
 }
