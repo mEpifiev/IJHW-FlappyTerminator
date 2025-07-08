@@ -1095,6 +1095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 590996093bd048644925a6f3d2300c16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enemySpawner: {fileID: 210123858}
 --- !u!1 &832346818
 GameObject:
   m_ObjectHideFlags: 0
@@ -2415,7 +2416,6 @@ MonoBehaviour:
   BulletPrefab: {fileID: 7995118228893275355, guid: 42c0ef12e01c8af47ac13a1f33f3d8ee, type: 3}
   ShotPoint: {fileID: 1836494796}
   Cooldown: 0.3
-  _scoreCounter: {fileID: 767168537}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
