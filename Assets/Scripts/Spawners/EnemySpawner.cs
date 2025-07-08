@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class EnemyGenerator : GenericPool<Enemy>
+public class EnemySpawner : MonoBehaviour
 {
+    [SerializeField] private EnemyPool _enemyPool;
     [SerializeField] private Enemy _enemy;
     [SerializeField] private float _delay;
     [SerializeField] private float _lowerLimitY;
@@ -10,19 +13,21 @@ public class EnemyGenerator : GenericPool<Enemy>
 
     private Coroutine _coroutine;
 
+    public event Action Released;
+
     public void Reset()
     {
         StopSpawn();
 
-        foreach (Enemy enemy in AllObjects)
+        foreach (Enemy enemy in _enemyPool.AllObjects)
         {
             enemy.Release();
             enemy.Released -= Release;
         }
 
-        ReleaseAllObjects();
+        _enemyPool.Reset();
 
-        _coroutine = StartCoroutine(Generate());
+        _coroutine = StartCoroutine(Spawn());
     }
 
     private void StopSpawn()
@@ -34,23 +39,24 @@ public class EnemyGenerator : GenericPool<Enemy>
         _coroutine = null;
     }
 
-    private IEnumerator Generate()
+    private IEnumerator Spawn()
     {
         WaitForSeconds wait = new WaitForSeconds(_delay);
 
         while (enabled)
         {
-            Spawn();
+            Create();
+
             yield return wait;
         }
     }
 
-    private void Spawn()
+    private void Create()
     {
         float spawnPositionY = Random.Range(_lowerLimitY, _upperLimitY);
         Vector3 spawnPoint = new Vector3(transform.position.x, spawnPositionY, transform.position.z);
 
-        Enemy enemy = GetObject(_enemy);
+        Enemy enemy = _enemyPool.GetObject(_enemy);
 
         enemy.Released += Release;
 
@@ -66,8 +72,10 @@ public class EnemyGenerator : GenericPool<Enemy>
         enemy.WeaponEnemy.StopShoot();
         enemy.BirdAnimator.StopFlyAnimation();
 
-        ReleaseObject(enemy);
+        _enemyPool.ReleaseObject(enemy);
 
         enemy.Released -= Release;
+
+        Released?.Invoke();
     }
 }

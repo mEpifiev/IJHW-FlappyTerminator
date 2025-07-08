@@ -6,5 +6,8 @@ public class ObjectRemover : MonoBehaviour
     {
         if (collision.TryGetComponent(out Enemy enemy))
             enemy.Release();
+
+        if(collision.TryGetComponent(out Bullet bullet))
+            bullet.Release();
     }
 }

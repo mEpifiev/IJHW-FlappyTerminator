@@ -14,6 +14,14 @@ public class Player : MonoBehaviour
 
     public event Action GameOver;
 
+    private void Awake()
+    {
+        _jumper = GetComponent<PlayerJumper>();
+        _collisionHandler = GetComponent<PlayerCollisionHandler>();
+        _inputReader = GetComponent<InputReader>();
+        _animator = GetComponent<BirdAnimator>();
+    }
+
     private void OnEnable()
     {
         _collisionHandler.CollisionDetected += OnCollisionDetected;
@@ -22,14 +30,6 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         _collisionHandler.CollisionDetected -= OnCollisionDetected;
-    }
-
-    private void Awake()
-    {
-        _jumper = GetComponent<PlayerJumper>();
-        _collisionHandler = GetComponent<PlayerCollisionHandler>();
-        _inputReader = GetComponent<InputReader>();
-        _animator = GetComponent<BirdAnimator>();
     }
 
     public void Reset()

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GenericPool<T> : MonoBehaviour where T : MonoBehaviour
+public abstract class GenericPool<T> : MonoBehaviour where T : MonoBehaviour
 {
     private Queue<T> _pool = new();
     private List<T> _allObjects = new();
@@ -22,7 +22,7 @@ public class GenericPool<T> : MonoBehaviour where T : MonoBehaviour
         _pool.Enqueue(@object);
     }
 
-    public void ReleaseAllObjects()
+    public void Reset()
     {
         foreach (T @object in _allObjects)
             if(@object.gameObject.activeSelf)

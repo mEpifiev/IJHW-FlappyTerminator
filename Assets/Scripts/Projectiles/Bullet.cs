@@ -1,24 +1,42 @@
+using System;
 using UnityEngine;
 
-public abstract class Bullet : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D))]
+public class Bullet : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
-    protected Rigidbody2D Rigidbody2D;
-    protected Vector2 Direction;
+    private Rigidbody2D _rigidbody2D;
+    private Vector2 _direction;
+
+    public event Action<Bullet> Released;
 
     protected virtual void Awake()
     {
-        Rigidbody2D = GetComponent<Rigidbody2D>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     protected virtual void FixedUpdate()
     {
-        Rigidbody2D.velocity = Direction * _speed;
+        _rigidbody2D.velocity = _direction * _speed;
     }
 
     public void SetDirection(Vector2 direction)
     {
-        Direction = direction.normalized;
+        _direction = direction.normalized;
+    }
+
+    public void Release()
+    {
+        Released?.Invoke(this);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.TryGetComponent(out Player player))
+            player.Die();
+
+        if (collision.TryGetComponent(out Enemy enemy))
+            enemy.Release();
     }
 }

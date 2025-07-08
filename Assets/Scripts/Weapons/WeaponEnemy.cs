@@ -1,29 +1,15 @@
 using System.Collections;
 using UnityEngine;
 
-public class WeaponEnemy : GenericPool<EnemyBullet>
+public class WeaponEnemy : Weapon
 {
-    [SerializeField] private EnemyBullet _enemyBullet;
-    [SerializeField] private Transform _shootPoint;
-    [SerializeField] private float _delay;
-
     private Coroutine _coroutine;
 
-    public void Reset()
+    public override void Reset()
     {
         StopShoot();
 
-        foreach (EnemyBullet bullet in AllObjects)
-        {
-            if(bullet.gameObject.activeSelf)
-            {
-                bullet.Released -= Release;
-
-                ReleaseObject(bullet);
-            }
-        }
-
-        ReleaseAllObjects();
+        base.Reset();
     }
 
     public void StartShoot()
@@ -41,12 +27,11 @@ public class WeaponEnemy : GenericPool<EnemyBullet>
 
         StopCoroutine(_coroutine);
         _coroutine = null;
-
     }
 
     private IEnumerator Shoot()
     {
-        WaitForSeconds wait = new WaitForSeconds(_delay);
+        WaitForSeconds wait = new WaitForSeconds(Cooldown);
 
         while (enabled)
         {
@@ -54,24 +39,5 @@ public class WeaponEnemy : GenericPool<EnemyBullet>
 
             yield return wait;
         }
-    }
-
-    private void SpawnBullet()
-    {
-        EnemyBullet enemyBullet = GetObject(_enemyBullet);
-
-        enemyBullet.Released += Release;
-
-        enemyBullet.gameObject.SetActive(true);
-
-        enemyBullet.transform.position = _shootPoint.position;
-        enemyBullet.SetDirection(transform.right);
-    }
-
-    private void Release(EnemyBullet enemyBullet)
-    {
-        ReleaseObject(enemyBullet);
-
-        enemyBullet.Released -= Release;       
     }
 }
